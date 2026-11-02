@@ -1,0 +1,8 @@
+### Warden Login
+POST http://localhost:5000/api/auth/warden/login
+Content-Type: application/json
+
+{
+  "email": "warden@hmms.com",
+  "password": "password"
+}

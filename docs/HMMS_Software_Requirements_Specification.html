@@ -1,0 +1,1279 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>HMMS - Software Requirements Specification</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap');
+
+    @page {
+      size: A4;
+      margin: 15mm 15mm 15mm 15mm;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+      font-size: 10.5pt;
+      line-height: 1.6;
+      color: #1e293b;
+      background-color: #ffffff;
+      margin: 0;
+      padding: 20px 30px;
+    }
+
+    @media print {
+      body {
+        padding: 0;
+        color: #0f172a;
+      }
+      .no-print {
+        display: none !important;
+      }
+      h1, h2, h3, h4 {
+        page-break-after: avoid;
+        break-after: avoid;
+      }
+      table, pre, blockquote, ul, ol, .cover-card {
+        page-break-inside: avoid;
+        break-inside: avoid;
+      }
+      h1 {
+        page-break-before: avoid;
+        break-before: avoid;
+      }
+      h1.chapter-break {
+        page-break-before: always !important;
+        break-before: page !important;
+        padding-top: 15px;
+      }
+    }
+
+    /* Print instruction banner */
+    .print-banner {
+      background: #0f172a;
+      border: 1px solid #1e293b;
+      color: #f8fafc;
+      padding: 16px 20px;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.2);
+    }
+    .banner-text {
+      flex: 1;
+    }
+    .banner-title {
+      font-size: 15px;
+      margin-bottom: 4px;
+      color: #ffffff;
+    }
+    .banner-desc {
+      font-size: 13px;
+      color: #94a3b8;
+      line-height: 1.5;
+    }
+    .banner-desc strong {
+      color: #f59e0b;
+    }
+    .print-btn {
+      background: #2563eb;
+      color: white;
+      border: none;
+      padding: 10px 22px;
+      border-radius: 8px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      white-space: nowrap;
+      transition: background 0.15s ease;
+      box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+    }
+    .print-btn:hover {
+      background: #1d4ed8;
+    }
+
+    /* Professional Cover Page Card */
+    .cover-card {
+      background: #ffffff;
+      border: 2px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 30px 32px;
+      margin-bottom: 25px;
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    .cover-badge {
+      display: inline-block;
+      font-size: 9pt;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: #2563eb;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      padding: 4px 12px;
+      border-radius: 20px;
+      margin-bottom: 14px;
+    }
+    .cover-title {
+      font-size: 24pt !important;
+      font-weight: 800 !important;
+      color: #0f172a !important;
+      border-bottom: none !important;
+      margin: 0 0 8px 0 !important;
+      padding: 0 !important;
+      line-height: 1.25 !important;
+    }
+    .cover-subtitle {
+      font-size: 13pt;
+      font-weight: 600;
+      color: #475569;
+      margin-bottom: 22px;
+    }
+    .cover-meta-box {
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 14px 18px;
+    }
+    .cover-meta-box p {
+      margin: 0;
+      line-height: 1.8;
+      font-size: 10pt;
+      color: #334155;
+    }
+
+    h1 {
+      font-size: 18pt;
+      font-weight: 700;
+      color: #0f172a;
+      border-bottom: 2px solid #e2e8f0;
+      padding-bottom: 6px;
+      margin-top: 22pt;
+      margin-bottom: 12pt;
+    }
+
+    h2 {
+      font-size: 13.5pt;
+      font-weight: 600;
+      color: #1e293b;
+      border-bottom: 1px solid #f1f5f9;
+      padding-bottom: 4px;
+      margin-top: 18pt;
+      margin-bottom: 8pt;
+    }
+
+    h3 {
+      font-size: 11.5pt;
+      font-weight: 600;
+      color: #334155;
+      margin-top: 14pt;
+      margin-bottom: 6pt;
+    }
+
+    h4 {
+      font-size: 10.5pt;
+      font-weight: 600;
+      color: #475569;
+      margin-top: 10pt;
+      margin-bottom: 4pt;
+    }
+
+    p {
+      margin-top: 0;
+      margin-bottom: 10pt;
+      text-align: justify;
+    }
+
+    ul, ol {
+      margin-top: 0;
+      margin-bottom: 10pt;
+      padding-left: 24px;
+    }
+
+    li {
+      margin-bottom: 4pt;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin: 14pt 0;
+      font-size: 9.5pt;
+    }
+
+    th, td {
+      border: 1px solid #cbd5e1;
+      padding: 7pt 9pt;
+      text-align: left;
+      vertical-align: top;
+    }
+
+    th {
+      background-color: #f1f5f9;
+      color: #0f172a;
+      font-weight: 600;
+    }
+
+    tr:nth-child(even) td {
+      background-color: #f8fafc;
+    }
+
+    code {
+      font-family: 'JetBrains Mono', 'Fira Code', Consolas, Monaco, monospace;
+      font-size: 8.8pt;
+      background-color: #f1f5f9;
+      color: #0f172a;
+      padding: 1.5px 5px;
+      border-radius: 4px;
+      border: 1px solid #e2e8f0;
+    }
+
+    pre {
+      background-color: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 6px;
+      padding: 10pt 14pt;
+      overflow-x: auto;
+      margin: 12pt 0;
+    }
+
+    pre code {
+      background-color: transparent;
+      padding: 0;
+      border: none;
+      font-size: 8.5pt;
+      line-height: 1.45;
+      color: #334155;
+    }
+
+    blockquote {
+      border-left: 4px solid #3b82f6;
+      background-color: #eff6ff;
+      padding: 8pt 14pt;
+      margin: 12pt 0;
+      border-radius: 0 6px 6px 0;
+      color: #1e3a8a;
+    }
+
+    hr {
+      border: none;
+      border-top: 1px solid #e2e8f0;
+      margin: 20pt 0;
+    }
+
+    a {
+      color: #2563eb;
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+  <div class="print-banner no-print">
+    <div class="banner-text">
+      <div class="banner-title">📄 <strong>Ready to Save as PDF</strong></div>
+      <div class="banner-desc">
+        👉 <strong>To remove the Date &amp; Time from the top:</strong> In Print Settings &rarr; Click <strong>"More settings"</strong> &rarr; <strong>Uncheck "Headers and footers"</strong>.<br>
+        👉 Make sure <strong>"Background graphics"</strong> is <strong>checked</strong> for table styles.
+      </div>
+    </div>
+    <button class="print-btn" onclick="window.print()">Print to PDF (Ctrl + P)</button>
+  </div>
+  
+<div class="cover-card">
+  <div class="cover-badge">ENTERPRISE SYSTEM SPECIFICATION</div>
+  <h1 class="cover-title">Hostel &amp; Mess Management System (HMMS)</h1>
+  <div class="cover-subtitle">Software Requirements Specification (IEEE 830-1998 Standard)</div>
+  <div class="cover-meta-box">
+    <p><strong>Document Version:</strong> 1.0 Approved<br><strong>Project Type:</strong> Enterprise Campus Infrastructure &amp; Facility Management Software<br><strong>Domain:</strong> Campus Residential Infrastructure and Dining Administration<br><strong>Date of Publication:</strong> September 2026<br><strong>Status:</strong> Approved Specification  </p>
+  </div>
+</div>
+<hr>
+<h2>Table of Contents</h2>
+<ul>
+<li><a href="#table-of-contents">Table of Contents</a></li>
+<li><a href="#revision-history">Revision History</a></li>
+<li><a href="#1-introduction">1. Introduction</a><ul>
+<li><a href="#11-purpose">1.1 Purpose</a></li>
+<li><a href="#12-document-conventions">1.2 Document Conventions</a></li>
+<li><a href="#13-intended-audience-and-reading-suggestions">1.3 Intended Audience and Reading Suggestions</a></li>
+<li><a href="#14-product-scope">1.4 Product Scope</a></li>
+<li><a href="#15-references">1.5 References</a></li>
+</ul>
+</li>
+<li><a href="#2-overall-description">2. Overall Description</a><ul>
+<li><a href="#21-product-perspective">2.1 Product Perspective</a></li>
+<li><a href="#22-product-functions">2.2 Product Functions</a></li>
+<li><a href="#23-user-classes-and-characteristics">2.3 User Classes and Characteristics</a></li>
+<li><a href="#24-operating-environment">2.4 Operating Environment</a></li>
+<li><a href="#25-design-and-implementation-constraints">2.5 Design and Implementation Constraints</a></li>
+<li><a href="#26-user-documentation">2.6 User Documentation</a></li>
+<li><a href="#27-assumptions-and-dependencies">2.7 Assumptions and Dependencies</a></li>
+</ul>
+</li>
+<li><a href="#3-external-interface-requirements">3. External Interface Requirements</a><ul>
+<li><a href="#31-user-interfaces">3.1 User Interfaces</a></li>
+<li><a href="#32-hardware-interfaces">3.2 Hardware Interfaces</a></li>
+<li><a href="#33-software-interfaces">3.3 Software Interfaces</a></li>
+<li><a href="#34-communications-interfaces">3.4 Communications Interfaces</a></li>
+</ul>
+</li>
+<li><a href="#4-system-features">4. System Features</a><ul>
+<li><a href="#41-user-authentication-and-access-control">4.1 User Authentication and Access Control</a></li>
+<li><a href="#42-student-resident-onboarding-and-profiling">4.2 Student Resident Onboarding and Profiling</a></li>
+<li><a href="#43-room-inventory-and-occupancy-allocation">4.3 Room Inventory and Occupancy Allocation</a></li>
+<li><a href="#44-multi-session-daily-attendance-tracking">4.4 Multi-Session Daily Attendance Tracking</a></li>
+<li><a href="#45-digital-leave-application-and-warden-approval">4.5 Digital Leave Application and Warden Approval</a></li>
+<li><a href="#46-fee-ledger-billing-reports-and-arrears-audit">4.6 Fee Ledger, Billing Reports, and Arrears Audit</a></li>
+<li><a href="#47-facility-maintenance-and-grievance-ticketing">4.7 Facility Maintenance and Grievance Ticketing</a></li>
+<li><a href="#48-mess-dining-menu-and-catering-operations">4.8 Mess Dining Menu and Catering Operations</a></li>
+<li><a href="#49-supervisory-staff-provisioning-and-administrative-governance">4.9 Supervisory Staff Provisioning and Administrative Governance</a></li>
+</ul>
+</li>
+<li><a href="#5-other-nonfunctional-requirements">5. Other Nonfunctional Requirements</a><ul>
+<li><a href="#51-performance-requirements">5.1 Performance Requirements</a></li>
+<li><a href="#52-safety-requirements">5.2 Safety Requirements</a></li>
+<li><a href="#53-security-requirements">5.3 Security Requirements</a></li>
+<li><a href="#54-software-quality-attributes">5.4 Software Quality Attributes</a></li>
+<li><a href="#55-business-rules">5.5 Business Rules</a></li>
+</ul>
+</li>
+<li><a href="#6-other-requirements">6. Other Requirements</a><ul>
+<li><a href="#61-conceptual-data-model-and-relational-schemas">6.1 Conceptual Data Model and Relational Schemas</a></li>
+<li><a href="#62-data-backup-and-disaster-recovery-strategy">6.2 Data Backup and Disaster Recovery Strategy</a></li>
+<li><a href="#63-security-considerations-and-hardening">6.3 Security Considerations and Hardening</a></li>
+<li><a href="#64-future-system-enhancements">6.4 Future System Enhancements</a></li>
+</ul>
+</li>
+<li><a href="#appendix-a-glossary">Appendix A: Glossary</a></li>
+<li><a href="#appendix-b-analysis-models">Appendix B: Analysis Models</a><ul>
+<li><a href="#b1-system-architecture-diagram">B.1 System Architecture Diagram</a></li>
+<li><a href="#b2-use-case-diagram">B.2 Use Case Diagram</a></li>
+<li><a href="#b3-entity-relationship-er-diagram">B.3 Entity Relationship (ER) Diagram</a></li>
+<li><a href="#b4-activity-diagram-student-leave-workflow">B.4 Activity Diagram: Student Leave Workflow</a></li>
+<li><a href="#b5-sequence-diagram-multi-session-attendance-logging">B.5 Sequence Diagram: Multi-Session Attendance Logging</a></li>
+</ul>
+</li>
+<li><a href="#appendix-c-to-be-determined-tbd-list">Appendix C: To Be Determined (TBD) List</a></li>
+</ul>
+<hr>
+<h2>Revision History</h2>
+<table>
+<thead>
+<tr>
+<th align="left">Name</th>
+<th align="left">Date</th>
+<th align="left">Reason For Changes</th>
+<th align="left">Version</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">Engineering Design Team</td>
+<td align="left">September 2026</td>
+<td align="left">Initial System Inception &amp; Requirements Elicitation</td>
+<td align="left">0.1</td>
+</tr>
+<tr>
+<td align="left">Architecture Review Board</td>
+<td align="left">September 2026</td>
+<td align="left">Refinement of Relational Schemas &amp; Role-Based Access Models</td>
+<td align="left">0.5</td>
+</tr>
+<tr>
+<td align="left">Full-Stack Implementation Lead</td>
+<td align="left">September 2026</td>
+<td align="left">Alignment with Production React/Node.js/MySQL Deployment</td>
+<td align="left">0.9</td>
+</tr>
+<tr>
+<td align="left">System Architecture &amp; Governance Board</td>
+<td align="left">September 2026</td>
+<td align="left">Final Specification Review, Verification, and Release Approval</td>
+<td align="left">1.0 Approved</td>
+</tr>
+</tbody></table>
+<hr>
+<h1 class="chapter-break">1. Introduction</h1>
+<h2>1.1 Purpose</h2>
+<p>The purpose of this Software Requirements Specification (SRS) document is to provide a complete, rigorous, and unambiguous description of the software requirements for the <strong>Hostel &amp; Mess Management System (HMMS)</strong>, Version 1.0. This specification outlines the functional capabilities, performance criteria, user interactions, external interfaces, database architectures, and design constraints that govern the design, implementation, and deployment of HMMS. </p>
+<p>This document encompasses the entire full-stack software system, including the clientside Single Page Application (SPA), the serverside Representational State Transfer (REST) Application Programming Interface (API), the relational database layer, and all supporting authentication and operational subsystems. It serves as the primary contractual and technical baseline for software developers, system architects, quality assurance engineers, institutional stakeholders, and project supervisors.</p>
+<h2>1.2 Document Conventions</h2>
+<p>This document adheres to the IEEE 830-1998 Recommended Practice for Software Requirements Specifications and follows standard software engineering documentation guidelines. The following conventions are observed throughout:</p>
+<ul>
+<li><strong>Requirement Identifiers:</strong> Individual functional requirements are identified using hierarchical alphanumeric codes formatted as <code>REQ-[SUBSYSTEM]-[IDENTIFIER]</code>, such as <code>REQ-AUTH-01</code> for authentication requirements or <code>REQ-ROOM-04</code> for room allocation requirements.</li>
+<li><strong>Priority Classifications:</strong> Each functional capability is rated according to standard engineering priority levels:<ul>
+<li><strong>High:</strong> Fundamental operational features mandatory for the system to achieve basic viability.</li>
+<li><strong>Medium:</strong> Essential secondary capabilities supporting operational efficiency, reporting, and maintenance.</li>
+<li><strong>Low:</strong> Value-added or administrative convenience functions that do not impede core operational workflows if deferred.</li>
+</ul>
+</li>
+<li><strong>Typographical Casing:</strong> Database entities, relations, and table names are rendered in uppercase monospaced text (e.g., <code>ROOM</code>, <code>STUDENT</code>, <code>LEAVE_APPLICATION</code>). User roles and tokens are rendered in capitalized bold text (e.g., <strong>Admin</strong>, <strong>Warden</strong>, <strong>Student</strong>, <strong>Mess Manager</strong>). User interface elements and API routes are presented in inline monospaced format (e.g., <code>/api/student/leave</code>, <code>&lt;DashboardCard /&gt;</code>).</li>
+</ul>
+<h2>1.3 Intended Audience and Reading Suggestions</h2>
+<p>This document is targeted toward multiple categories of readers, each of whom should navigate the contents according to their technical objectives:</p>
+<ol>
+<li><strong>Project Stakeholders and Technical Evaluators:</strong> Sections <a href="#1-introduction">1 (Introduction)</a>, <a href="#2-overall-description">2 (Overall Description)</a>, and <a href="#appendix-b-analysis-models">Appendix B (Analysis Models)</a> provide an executive overview of the system&#39;s operational scope, institutional feasibility, and architectural rigor.</li>
+<li><strong>Software Developers and Full-Stack Engineers:</strong> Sections <a href="#3-external-interface-requirements">3 (External Interface Requirements)</a>, <a href="#4-system-features">4 (System Features)</a>, and <a href="#61-conceptual-data-model-and-relational-schemas">6.1 (Conceptual Data Model)</a> establish the definitive behavioral contract, input-processing-output criteria, error conditions, and database structures required for code generation and maintenance.</li>
+<li><strong>Quality Assurance and Test Automation Engineers:</strong> Section <a href="#4-system-features">4 (System Features)</a> and Section <a href="#5-other-nonfunctional-requirements">5 (Other Nonfunctional Requirements)</a> formulate the verification matrix, boundary conditions, exception rules, and performance thresholds against which unit, integration, and end-to-end test suites are validated.</li>
+<li><strong>Institutional Administrators and Facility Wardens:</strong> Section <a href="#22-product-functions">2.2 (Product Functions)</a>, Section <a href="#23-user-classes-and-characteristics">2.3 (User Classes)</a>, and Section <a href="#55-business-rules">5.5 (Business Rules)</a> outline operational policies, permissions models, and institutional workflows enforced by the platform.</li>
+</ol>
+<p>A recommended reading strategy commences with Sections 1 and 2 to establish domain context, followed by the specific functional areas in Section 4, concluding with the data schemas and architectural diagrams in Section 6 and Appendix B.</p>
+<h2>1.4 Product Scope</h2>
+<p>The <strong>Hostel &amp; Mess Management System (HMMS)</strong> is an integrated enterprise-grade management portal engineered to digitize, unify, and automate residential campus governance in higher education institutions. Historically, university hostels have relied on fragmented paper registers, physical ledgers, verbal notifications, and manual sign-in sheets. This legacy approach is prone to clerical errors, unauthorized out-passes, unaccounted meal waste, delayed maintenance responses, and financial reconciliation discrepancies.</p>
+<p>HMMS delivers a unified, centralized web platform engineered on modern client-server principles. The system orchestrates four key administrative domains:</p>
+<ol>
+<li><strong>Student Residential Life:</strong> Enabling self-service visibility into room assignment, meal attendance metrics, semester dues, digital out-pass leave requests, and maintenance complaint tickets.</li>
+<li><strong>Warden Residential Supervision:</strong> Providing automated physical occupancy rosters, real-time bed allocation toggles, digital leave request evaluation, room inspection logging, and roll-call records.</li>
+<li><strong>Mess and Dining Operations:</strong> Managing daily dining menus across four meal tiers (Breakfast, Lunch, Snacks, Dinner), recording student dining check-ins, monitoring turnout, and auditing resident meal fee collections.</li>
+<li><strong>System Administration:</strong> Centralizing role-based provisioning of wardens, mess managers, and student residents, maintaining hostel building and room master inventories, and generating institutional audit reports.</li>
+</ol>
+<p>By deploying HMMS, the institution eliminates manual paperwork, enforces strict campus security and accountability, ensures equitable hostel resource allocation, eliminates food waste through meal demand predictability, and maintains transparent financial audit trails.</p>
+<h2>1.5 References</h2>
+<ol>
+<li>IEEE Std 830-1998, <em>IEEE Recommended Practice for Software Requirements Specifications</em>, IEEE Computer Society, 1998.</li>
+<li>Fielding, R. T., <em>Architectural Styles and the Design of Network-based Software Architectures</em>, Doctoral Dissertation, University of California, Irvine, 2000.</li>
+<li>Internet Engineering Task Force (IETF) RFC 7519, <em>JSON Web Token (JWT)</em>, May 2015.</li>
+<li>World Wide Web Consortium (W3C), <em>Web Content Accessibility Guidelines (WCAG) 2.1</em>, June 2018.</li>
+<li>Elmasri, R., and Navathe, S. B., <em>Fundamentals of Database Systems</em>, 7th Edition, Pearson, 2016.</li>
+<li>React Documentation, <em>React: The Library for Web and Native User Interfaces</em>, Meta Platforms, Inc., 2024.</li>
+<li>Node.js Foundation, <em>Node.js Technical Documentation and Architecture</em>, OpenJS Foundation, 2024.</li>
+</ol>
+<hr>
+<h1 class="chapter-break">2. Overall Description</h1>
+<h2>2.1 Product Perspective</h2>
+<p>HMMS is an autonomous, self-contained, web-based software application engineered to replace manual hostel record books and ad-hoc spreadsheets. While operating as a complete standalone system, HMMS is structurally designed following a layered, decoupled Client-Server architecture that integrates with existing institutional local area networks (LAN) or public cloud infrastructure.</p>
+<pre><code>+-------------------------------------------------------------------------+
+|                              CLIENT TIER                                |
+|  React 18 Single Page Application (Vite Build Engine + Tailwind CSS)    |
+|  - Modern SaaS Responsive Interface (Desktop, Tablet, Mobile)          |
+|  - Axios HTTP Interceptor Layer with Token Ingestion Engine             |
++-------------------------------------------------------------------------+
+                                    |
+                          HTTPS / JSON REST API
+                                    |
++-------------------------------------------------------------------------+
+|                            APPLICATION TIER                             |
+|  Node.js + Express.js Asynchronous Runtime Environment                 |
+|  - JWT Authentication Middleware &amp; Role-Based Access Control (RBAC)     |
+|  - Modular Express Routers (Auth, Student, Warden, Admin, Mess)         |
+|  - Business Logic Controllers with Comprehensive Error Sanitization     |
++-------------------------------------------------------------------------+
+                                    |
+                           TCP / MySQL Connection
+                                    |
++-------------------------------------------------------------------------+
+|                                DATA TIER                                |
+|  MySQL 8.0 Enterprise Relational Database Management System            |
+|  - Connection Pooling with Async/Await Promise Pipeline                 |
+|  - Relational Integrity (Foreign Keys, Triggers, Normalized 3NF Schemas)|
++-------------------------------------------------------------------------+
+</code></pre>
+<p>The system operates independently without mandatory dependencies on external commercial SaaS platforms, ensuring complete data sovereignty, zero ongoing licensing costs, and complete compliance with institutional student data privacy guidelines.</p>
+<h2>2.2 Product Functions</h2>
+<p>The primary functions executed by the HMMS software ecosystem are categorized across four principal operational pillars:</p>
+<h3>1. User Identity &amp; Access Management</h3>
+<ul>
+<li>Secure cryptographically salted credential authentication via JSON Web Tokens (JWT).</li>
+<li>Strict Role-Based Access Control (RBAC) partitioned across four distinct authorization levels.</li>
+<li>Autonomous token expiration, session persistence in clientside encrypted local storage, and client-side route guarding.</li>
+</ul>
+<h3>2. Residential Inventory &amp; Bed Allocation</h3>
+<ul>
+<li>Building, wing, and room master catalogue tracking room type (<code>SINGLE</code>, <code>DOUBLE</code>, <code>TRIPLE</code>), operational status (<code>AVAILABLE</code>, <code>FULL</code>), and maximum bed capacity.</li>
+<li>Dynamic occupancy calculations ensuring that room allocations never exceed physical capacities.</li>
+<li>Real-time warden allocation assignment linking student resident IDs to specific room numbers.</li>
+</ul>
+<h3>3. Multi-Session Campus &amp; Dining Attendance</h3>
+<ul>
+<li>Three-tier meal session recording (<code>BREAKFAST</code>, <code>LUNCH</code>, <code>DINNER</code>) as well as daily hostel night roll-call tracking.</li>
+<li>Interactive warden and mess manager check-in rosters supporting bulk toggles, roll-number search, and single-click state inversion.</li>
+<li>Student percentage compliance tracking against the mandatory institutional 75% residency requirement, complete with visual progress metrics.</li>
+</ul>
+<h3>4. Residential Leave &amp; Out-Pass Governance</h3>
+<ul>
+<li>Self-service digital out-pass filing for overnight campus departures with destination, emergency contact, and duration timestamps.</li>
+<li>Supervisory Warden approval/rejection queue with automated administrative logging.</li>
+<li>Student application tracking displaying real-time review states (<code>PENDING</code>, <code>APPROVED</code>, <code>REJECTED</code>).</li>
+</ul>
+<h3>5. Institutional Billing &amp; Arrears Audit</h3>
+<ul>
+<li>Automated ledger creation calculating assessed fees, recorded student settlements, and outstanding balances.</li>
+<li>Comprehensive fee categorization supporting room occupancy charges, mess subscriptions, and campus maintenance dues.</li>
+<li>Real-time finance reports accessible to Wardens and Mess Managers for arrears recovery and revenue audits.</li>
+</ul>
+<h3>6. Campus Maintenance &amp; Grievance Rectification</h3>
+<ul>
+<li>Student issue reporting categorized under structural room maintenance, electrical fixtures, plumbing, mess quality, or general campus inquiries.</li>
+<li>Warden ticket inspection stream supporting maintenance note capture and transition to <code>RESOLVED</code> status.</li>
+</ul>
+<h2>2.3 User Classes and Characteristics</h2>
+<p>The platform serves four primary user classes with distinct operational responsibilities, educational backgrounds, and system interaction profiles:</p>
+<table>
+<thead>
+<tr>
+<th align="left">User Class</th>
+<th align="left">Technical Expertise</th>
+<th align="left">Usage Frequency</th>
+<th align="left">Primary System Objectives</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>Student Resident</strong></td>
+<td align="left">Moderate to High (Web &amp; Mobile native)</td>
+<td align="left">Daily (multiple times per day)</td>
+<td align="left">Review meal menus, monitor personal attendance compliance, check allocated room info, submit leave out-passes, verify payment dues, log facility maintenance tickets.</td>
+</tr>
+<tr>
+<td align="left"><strong>Hostel Warden</strong></td>
+<td align="left">Moderate (Standard desktop/laptop office user)</td>
+<td align="left">Daily (regular work shifts)</td>
+<td align="left">Supervise wing occupancy, execute bed allocations, review and approve/reject leave applications, conduct night roll-calls, investigate complaints, audit fee ledgers.</td>
+</tr>
+<tr>
+<td align="left"><strong>Mess Manager</strong></td>
+<td align="left">Basic to Moderate (Specialized administrative user)</td>
+<td align="left">Daily (aligned with meal schedules)</td>
+<td align="left">Manage published daily meal menus, execute resident check-ins for breakfast, lunch, and dinner, monitor dietary preferences, audit dining fee reports.</td>
+</tr>
+<tr>
+<td align="left"><strong>System Administrator</strong></td>
+<td align="left">High (Systems administrator / IT personnel)</td>
+<td align="left">Weekly to Monthly</td>
+<td align="left">Provision supervisor accounts (Wardens, Mess Managers), manage campus room master inventories, oversee student resident admissions, ensure database integrity.</td>
+</tr>
+</tbody></table>
+<h2>2.4 Operating Environment</h2>
+<p>HMMS is engineered to operate efficiently across diverse computational environments:</p>
+<h3>Client-Side Environment</h3>
+<ul>
+<li><strong>Browser Compatibility:</strong> Google Chrome 90+, Mozilla Firefox 88+, Apple Safari 14+, Microsoft Edge 90+, Opera 76+.</li>
+<li><strong>Device Support:</strong> Responsive layout support across Smartphones (min width 360px), Tablets (768px - 1024px), Laptops (1280px - 1440px), and Ultra-wide Desktop Monitors (1920px+).</li>
+<li><strong>Client Execution Engine:</strong> ECMAScript 2020 (ES11) compliant JavaScript runtime.</li>
+</ul>
+<h3>Server-Side Environment</h3>
+<ul>
+<li><strong>Runtime Environment:</strong> Node.js version 18.x LTS or 20.x LTS.</li>
+<li><strong>Operating System:</strong> Platform independent; verified on Ubuntu Linux 22.04 LTS, Debian 12, Red Hat Enterprise Linux 9, Windows Server 2022, and Windows 10/11 Professional.</li>
+<li><strong>Web Server / Reverse Proxy:</strong> Express.js native HTTP server, optionally fronted by NGINX or Apache HTTP Server for SSL termination and static asset caching.</li>
+</ul>
+<h3>Database Environment</h3>
+<ul>
+<li><strong>Database Engine:</strong> MySQL Enterprise Server 8.0 or MariaDB 10.6+.</li>
+<li><strong>Storage Engine:</strong> InnoDB supporting ACID transactions, row-level locking, and foreign key constraints.</li>
+<li><strong>Character Encoding:</strong> <code>utf8mb4</code> with <code>utf8mb4_unicode_ci</code> collation supporting internationalized names and full Unicode glyph sets.</li>
+</ul>
+<h2>2.5 Design and Implementation Constraints</h2>
+<ol>
+<li><strong>Architectural Decoupling:</strong> The frontend SPA and backend REST API must communicate strictly through stateless JSON payloads over HTTP/HTTPS. No serverside HTML rendering or session state storage is permitted in the Express runtime.</li>
+<li><strong>Stateless Authentication:</strong> User identity must be authenticated via digitally signed JSON Web Tokens (JWT) adhering to RFC 7519. Secret keys must be managed through secure environment variables (<code>.env</code>) and never checked into source control.</li>
+<li><strong>Database Normalization:</strong> All relational schemas must adhere to Third Normal Form (3NF) to eliminate data redundancy, anomalous deletions, and update discrepancies.</li>
+<li><strong>CSS and UI Framework Constraints:</strong> Frontend user interfaces must utilize pure Tailwind CSS utility classes and modern vanilla CSS tokens. Bulky third-party UI component suites that inflate bundle sizes or introduce rigid legacy styles are strictly avoided.</li>
+<li><strong>Regulatory &amp; Privacy Compliance:</strong> Student personal records, guardian contact telephone numbers, and financial payment histories must be protected with access controls preventing cross-student data leakage.</li>
+</ol>
+<h2>2.6 User Documentation</h2>
+<p>HMMS includes a comprehensive documentation suite delivered alongside the system distribution:</p>
+<ul>
+<li><strong>System Administrator Installation &amp; Setup Manual:</strong> Technical instructions detailing MySQL database creation, <code>.env</code> parameter configuration, npm package provisioning, database migration scripts, and production process management via PM2.</li>
+<li><strong>Warden &amp; Mess Manager Operational Guide:</strong> Illustrated task-oriented walkthroughs covering room allocation, multi-session meal check-in, out-pass verification, and billing report extraction.</li>
+<li><strong>Student Resident Digital Portal Guide:</strong> Accessible online portal documentation explaining leave filing timelines, minimum attendance thresholds, grievance submission procedures, and account security.</li>
+<li><strong>Interactive REST API Documentation:</strong> Formal OpenAPI/Swagger specification detailing all JSON payload schemas, authorization headers, HTTP response status codes, and error models.</li>
+</ul>
+<h2>2.7 Assumptions and Dependencies</h2>
+<ul>
+<li><strong>Campus Network Connectivity:</strong> It is assumed that students, wardens, and mess supervisors have access to campus Wi-Fi, LAN, or cellular mobile networks to access the web application.</li>
+<li><strong>Device Availability:</strong> It is assumed that wardens and mess managers possess desktop computers, laptops, or tablets capable of rendering modern HTML5/CSS3 web browsers.</li>
+<li><strong>Institutional Master Data:</strong> It is assumed that initial student academic admissions records (Roll Numbers, Departments, Assigned Academic Years) are provisioned through verified institutional enrolment records.</li>
+<li><strong>Database Persistence:</strong> The system depends on a continuous, uninterrupted connection to the MySQL database engine. Database clustering or localized automatic restarts must maintain high availability.</li>
+</ul>
+<hr>
+<h1 class="chapter-break">3. External Interface Requirements</h1>
+<h2>3.1 User Interfaces</h2>
+<p>The HMMS user interface is engineered according to commercial SaaS product design standards, prioritizing visual ergonomics, disciplined spacing, and accessibility.</p>
+<h3>Visual Design System</h3>
+<ul>
+<li><strong>Color Palette:</strong><ul>
+<li><strong>App Canvas Background:</strong> <code>#060C1B</code> (Deep Obsidian Blue)</li>
+<li><strong>Sidebar Surface:</strong> <code>#0F172A</code> (Slate Midnight)</li>
+<li><strong>Primary Card Surface:</strong> <code>#111827</code> (Card Charcoal)</li>
+<li><strong>Secondary / Nested Surface:</strong> <code>#1A2338</code> (Elevated Navy)</li>
+<li><strong>Interactive Hover Surface:</strong> <code>#202B44</code> (Soft Steel Blue)</li>
+<li><strong>Primary Brand Accent:</strong> <code>#2563EB</code> (Royal Blue)</li>
+<li><strong>Semantic Indicators:</strong> <code>#16A34A</code> (Success Emerald), <code>#D97706</code> (Warning Amber), <code>#DC2626</code> (Danger Crimson)</li>
+<li><strong>Typography:</strong> Inter typography font family applied globally across all viewport scales.</li>
+</ul>
+</li>
+<li><strong>Typographic Scale:</strong><ul>
+<li>Page Title: 42px Bold (<code>lg:text-[42px] font-bold</code>)</li>
+<li>Section Title: 24px SemiBold (<code>text-[24px] font-semibold</code>)</li>
+<li>Statistical Metric Value: 32px Bold (<code>text-[32px] font-bold</code>)</li>
+<li>Table Header &amp; Body: 15px Medium / Regular</li>
+<li>Captions &amp; Secondary Badges: 13px Regular</li>
+</ul>
+</li>
+<li><strong>Spatial System:</strong> Rigid 8px dimensional grid enforcing 24px card paddings (<code>p-6</code>), 32px major section gaps (<code>space-y-8</code>), 16px grid card gutters (<code>gap-4</code> / <code>gap-6</code>), and 40–44px uniform button heights.</li>
+</ul>
+<h3>Layout Blueprints</h3>
+<p>Every role-based portal implements a persistent, fixed-width sidebar (<code>w-64</code>) with rounded geometry, soft elevation shadows (<code>shadow-soft</code>), perfectly aligned Lucide icons, and a filled blue active pill indicator (<code>bg-[#2563EB] text-white</code>). The top header provides persistent breadcrumbs, user identification avatars with initial-based fallbacks, and notification triggers. Tables feature sticky column headers (<code>#0F172A</code>), rounded-3xl outer containers, and soft row hover transitions (<code>hover:bg-[#1A2338]/60</code>).</p>
+<pre><code>+---------------------------------------------------------------------------------------+
+|  HMMS Header: [Page Title]             [Subtitle Breadcrumb]       [Bell] [User Avatar] |
++----------------------+----------------------------------------------------------------+
+|  SIDEBAR (w-64)      |  MAIN CONTENT VIEWPORT (max-w-7xl mx-auto space-y-8)           |
+|                      |                                                                |
+|  [Logo &amp; Brand]      |  1. Top Section: 42px Title + Subtitle Breadcrumbs             |
+|                      |  2. Metric KPI Grid: 4 x StatCard (Icon, Large 32px Value)    |
+|  - Dashboard (Active)|  3. Primary Working Surface: Interactive Table / Workflow Form  |
+|  - Allocation / Room |  4. Supporting Details: Secondary Cards, Menus, Analytics Gauge|
+|  - Attendance        |                                                                |
+|  - Fee Reports       |                                                                |
+|  - Leave Portal      |                                                                |
+|  - Grievances        |                                                                |
+|                      |                                                                |
+|  [Pinned Profile]    |                                                                |
+|  User Name &amp; Logout  |                                                                |
++----------------------+----------------------------------------------------------------+
+</code></pre>
+<h2>3.2 Hardware Interfaces</h2>
+<p>HMMS does not mandate proprietary physical computing hardware:</p>
+<ul>
+<li><strong>Client Processing Hardware:</strong> Standard personal computing devices equipped with minimum 2 GB RAM, dual-core processors, and display monitors with minimum resolution of 360 x 640 pixels (mobile) or 1366 x 768 pixels (workstation).</li>
+<li><strong>Server Infrastructure:</strong> Host computing server equipped with minimum 2 vCPUs, 4 GB RAM, and 20 GB solid-state disk (SSD) storage running standard server operating systems.</li>
+</ul>
+<h2>3.3 Software Interfaces</h2>
+<p>HMMS interfaces with the following software platforms and component libraries:</p>
+<ol>
+<li><strong>Operating System Interfaces:</strong> Node.js system runtime accessing filesystem directories for log output, environment configuration files (<code>.env</code>), and process signal monitoring (<code>SIGINT</code>, <code>SIGTERM</code>).</li>
+<li><strong>Database Engine Management:</strong> Communicates with MySQL 8.0 via the <code>mysql2/promise</code> driver over standard TCP/IP socket connections utilizing connection pooling (maximum 10 concurrent connections per node process).</li>
+<li><strong>HTTP Client Communication:</strong> Frontend Axios client library configured with dynamic environment-driven base URLs (<code>VITE_API_URL</code>, falling back to <code>http://localhost:5000/api</code> during local development) and asynchronous request/response interceptors that inject Bearer JWT authorization headers into outgoing requests.</li>
+<li><strong>Component Iconography:</strong> Lucide React modern vector icon package for consistent, responsive SVG vector graphics rendering.</li>
+</ol>
+<h2>3.4 Communications Interfaces</h2>
+<ol>
+<li><strong>Transport Layer Protocol:</strong> Hypertext Transfer Protocol Secure (HTTPS) over Transport Layer Security (TLS 1.2 or TLS 1.3) for all production traffic; HTTP/1.1 permitted during local development.</li>
+<li><strong>Data Serialization:</strong> JavaScript Object Notation (JSON) format adhering to MIME type <code>application/json</code> for all API request bodies and response payloads.</li>
+<li><strong>Cross-Origin Resource Sharing (CORS):</strong> Backend Express CORS middleware configured to validate and permit trusted origins (including local development <code>http://localhost:5173</code>, production Vercel domains <code>*.vercel.app</code>, and custom client origins via <code>CLIENT_URL</code>) with credentials enabled (<code>credentials: true</code>), preventing cross-site scripting and unauthorized domain access.</li>
+</ol>
+<hr>
+<h1 class="chapter-break">4. System Features</h1>
+<h2>4.1 User Authentication and Access Control</h2>
+<h3>4.1.1 Description and Priority</h3>
+<p>HMMS mandates secure credential authentication for all system actors. The system implements stateless, role-partitioned authentication utilizing JSON Web Tokens.<br><strong>Priority:</strong> High (Core Security Foundation).</p>
+<h3>4.1.2 Stimulus/Response Sequences</h3>
+<ol>
+<li><strong>User Action:</strong> The user navigates to <code>/login</code>, selects their operational portal tab (<strong>Student</strong>, <strong>Warden</strong>, <strong>Mess Manager</strong>, or <strong>Admin</strong>), enters their registered email address and password, and clicks &quot;Authenticate Portal&quot;.</li>
+<li><strong>System Response:</strong> The clientside application validates input completeness and dispatches an HTTP POST request to <code>/api/auth/login</code>.</li>
+<li><strong>Backend Processing:</strong> The server validates the existence of the email, verifies the password hash, asserts that the user&#39;s role matches the requested portal, generates an encrypted JWT token, and returns user identity metadata.</li>
+<li><strong>Client Ingestion:</strong> The client stores the JWT in persistent storage, updates the global <code>AuthContext</code> state, and navigates the user to their designated dashboard.</li>
+</ol>
+<h3>4.1.3 Functional Requirements</h3>
+<ul>
+<li><strong>REQ-AUTH-01:</strong> The system shall authenticate users against the <code>USER</code> relational table via verified email address and cryptographic password match.</li>
+<li><strong>REQ-AUTH-02:</strong> Upon successful verification, the system shall generate a cryptographically signed JSON Web Token containing <code>user_id</code>, <code>email</code>, and <code>role</code>, signed with an HMAC-SHA256 secret key, configured with an expiration period of 24 hours.</li>
+<li><strong>REQ-AUTH-03:</strong> The system shall reject login attempts where the authenticated user role does not match the active login portal selection.</li>
+<li><strong>REQ-AUTH-04:</strong> The frontend application shall intercept all protected route transitions (<code>&lt;ProtectedRoute allowedRoles={[...]} /&gt;</code>) and redirect unauthenticated or unauthorized requests to <code>/login</code>.</li>
+<li><strong>REQ-AUTH-05:</strong> The frontend Axios interceptor shall automatically attach the authorization header <code>Authorization: Bearer &lt;token&gt;</code> to all HTTP requests directed to <code>/api/*</code>.</li>
+</ul>
+<pre><code>Inputs:               Processing:                        Outputs:
++------------------+  +--------------------------------+ +------------------+
+| Email Address    |  | 1. Sanitize string inputs      | | HTTP 200 OK      |
+| Password String  |-&gt;| 2. Query USER table            |-&gt;| JWT Signed Token |
+| Selected Role    |  | 3. Assert Role Permissions     | | User Profile Obj |
++------------------+  | 4. Sign JWT with Expiry        | +------------------+
+                      +--------------------------------+
+</code></pre>
+<h2>4.2 Student Resident Onboarding and Profiling</h2>
+<h3>4.2.1 Description and Priority</h3>
+<p>Allows Administrators to register new student hostel residents, provision access credentials, and maintain academic directory profiles.<br><strong>Priority:</strong> High.</p>
+<h3>4.2.2 Stimulus/Response Sequences</h3>
+<ol>
+<li><strong>User Action:</strong> Admin opens the Student Roster portal (<code>/admin/students</code>), expands the &quot;Enrol New Student&quot; collapsible form, fills in student demographic details (Name, Email, Password, Roll Number, Phone, Department, Year of Study, Guardian Contact), and submits.</li>
+<li><strong>System Response:</strong> Form inputs are verified; POST request dispatches to <code>/api/admin/students</code>.</li>
+<li><strong>Backend Processing:</strong> System executes an atomic transaction creating the base <code>USER</code> record with role <code>&#39;STUDENT&#39;</code>, retrieves the inserted <code>user_id</code>, and creates the associated <code>STUDENT</code> record with roll number and academic parameters.</li>
+<li><strong>System Response:</strong> System alerts success and triggers an automatic roster re-fetch.</li>
+</ol>
+<h3>4.2.3 Functional Requirements</h3>
+<ul>
+<li><strong>REQ-STU-01:</strong> The system shall enforce uniqueness on student roll numbers and institutional email addresses.</li>
+<li><strong>REQ-STU-02:</strong> The system shall store academic details including Department and Year of Study (1 through 4).</li>
+<li><strong>REQ-STU-03:</strong> The system shall record student contact phone numbers and mandatory emergency guardian contact numbers.</li>
+<li><strong>REQ-STU-04:</strong> Deletion of a student record shall cascade appropriately, clearing active room allocations while archiving past financial transaction records.</li>
+</ul>
+<h2>4.3 Room Inventory and Occupancy Allocation</h2>
+<h3>4.3.1 Description and Priority</h3>
+<p>Enables the administration to provision physical hostel rooms, define occupancy capacities, track vacancies, and empowers Wardens to allocate residents to beds.<br><strong>Priority:</strong> High.</p>
+<h3>4.3.2 Stimulus/Response Sequences</h3>
+<ol>
+<li><strong>Room Creation:</strong> Admin inputs Room Number, Room Tier (<code>SINGLE</code>, <code>DOUBLE</code>, <code>TRIPLE</code>), and Capacity (1 to 6) on <code>/admin/rooms</code>. System inserts record into <code>ROOM</code> with initial <code>occupied_count = 0</code> and status <code>AVAILABLE</code>.</li>
+<li><strong>Room Allocation:</strong> Warden views active room cards on <code>/warden/rooms</code>. The card displays occupancy progress (e.g., &quot;1 of 2 Beds Filled&quot;). The Warden selects an unallocated resident from the dropdown and clicks &quot;Allocate Student&quot;.</li>
+<li><strong>Processing:</strong> System verifies that <code>occupied_count &lt; capacity</code>. It updates the student&#39;s <code>room_id</code> in the database, increments the room&#39;s <code>occupied_count</code>, and if <code>occupied_count == capacity</code>, sets room status to <code>FULL</code>.</li>
+<li><strong>Student Feedback:</strong> When the student resident logs into their portal (<code>/student/room</code>), the system renders their assigned room number, block wing, room type, and occupancy status.</li>
+</ol>
+<h3>4.3.3 Functional Requirements</h3>
+<ul>
+<li><strong>REQ-ROOM-01:</strong> The system shall track room inventory with unique room identifiers, room numbers, types (<code>SINGLE</code>, <code>DOUBLE</code>, <code>TRIPLE</code>), capacities, and statuses (<code>AVAILABLE</code>, <code>FULL</code>).</li>
+<li><strong>REQ-ROOM-02:</strong> The system shall prohibit the allocation of any student to a room whose <code>occupied_count</code> is equal to or exceeds its designated <code>capacity</code>.</li>
+<li><strong>REQ-ROOM-03:</strong> The system shall automatically compute room occupancy percentage and visually display dynamic gauge indicators.</li>
+<li><strong>REQ-ROOM-04:</strong> Wardens shall have manual toggle overrides to mark a room as <code>AVAILABLE</code> or <code>FULL</code> during maintenance closures.</li>
+</ul>
+<h2>4.4 Multi-Session Daily Attendance Tracking</h2>
+<h3>4.4.1 Description and Priority</h3>
+<p>Provides granular tracking of resident presence across three daily dining sessions (Breakfast, Lunch, Dinner) as well as daily hostel residency roll-calls.<br><strong>Priority:</strong> High.</p>
+<h3>4.4.2 Stimulus/Response Sequences</h3>
+<ol>
+<li><strong>Warden / Manager Action:</strong> The supervisor navigates to the attendance portal (<code>/warden/attendance</code> or <code>/mess-manager/attendance</code>).</li>
+<li><strong>Roster Display:</strong> The system renders the registered student resident roster. Each student card displays meal session status indicators.</li>
+<li><strong>Toggle Event:</strong> The supervisor clicks the &quot;Present&quot; or &quot;Absent&quot; segmented toggle button for a resident.</li>
+<li><strong>System Response:</strong> System performs an optimistic UI update, changes the badge to active green or neutral crimson, and dispatches a background POST request to <code>/api/attendance</code> with <code>student_id</code>, <code>date</code>, <code>meal_type</code>, and <code>present</code> (boolean).</li>
+<li><strong>Database Processing:</strong> The server performs an <code>INSERT ... ON DUPLICATE KEY UPDATE</code> query, updating existing logs or inserting new entries.</li>
+<li><strong>Student Calculation:</strong> The student attendance view (<code>/student/attendance</code>) recalculates overall attendance percentage: <code>(Total Present Sessions / Total Evaluated Sessions) * 100</code>, flagging compliance against the 75% benchmark.</li>
+</ol>
+<h3>4.4.3 Functional Requirements</h3>
+<ul>
+<li><strong>REQ-ATTN-01:</strong> The system shall support attendance tracking across discrete meal types: <code>BREAKFAST</code>, <code>LUNCH</code>, <code>DINNER</code>, and general <code>DAILY</code> roll-call.</li>
+<li><strong>REQ-ATTN-02:</strong> Attendance records shall be uniquely constrained by the composite key <code>(student_id, date, meal_type)</code>.</li>
+<li><strong>REQ-ATTN-03:</strong> The system shall maintain optimistic UI updates allowing supervisors to record rapid check-ins during high-volume dining hall entry without interface freezing.</li>
+<li><strong>REQ-ATTN-04:</strong> The student dashboard shall compute overall percentage turnout and display warning indicators if attendance drops below 75%.</li>
+</ul>
+<h2>4.5 Digital Leave Application and Warden Approval</h2>
+<h3>4.5.1 Description and Priority</h3>
+<p>Manages student requests for overnight campus departures, weekend out-passes, and vacation leaves, replacing paper leave slips with an audited digital workflow.<br><strong>Priority:</strong> High.</p>
+<h3>4.5.2 Stimulus/Response Sequences</h3>
+<ol>
+<li><strong>Student Application:</strong> Student accesses <code>/student/leave</code>, enters departure date (<code>from_date</code>), return date (<code>to_date</code>), and comprehensive reason/destination, and submits.</li>
+<li><strong>Backend Submission:</strong> System validates that <code>to_date &gt;= from_date</code>, inserts record into <code>LEAVE_APPLICATION</code> with status <code>PENDING</code>, and sets <code>applied_date = CURRENT_TIMESTAMP</code>.</li>
+<li><strong>Warden Review:</strong> Warden opens <code>/warden/leave-requests</code>. The pending request queue highlights the student&#39;s name, roll number, requested date range, and reason.</li>
+<li><strong>Decision Execution:</strong> Warden clicks &quot;Approve&quot; or &quot;Reject&quot;. System dispatches PUT request to <code>/api/warden/leaves/:id</code> updating status to <code>APPROVED</code> or <code>REJECTED</code>.</li>
+<li><strong>Real-time Status Update:</strong> Student application table updates immediately to display an approved green pill badge or rejected crimson badge.</li>
+</ol>
+<h3>4.5.3 Functional Requirements</h3>
+<ul>
+<li><strong>REQ-LEAVE-01:</strong> The system shall validate that leave return dates are chronologically equal to or subsequent to the departure date.</li>
+<li><strong>REQ-LEAVE-02:</strong> All submitted leave applications shall default to the <code>PENDING</code> review state.</li>
+<li><strong>REQ-LEAVE-03:</strong> Only authenticated users with the <strong>Warden</strong> role shall have authorization to transition leave application states to <code>APPROVED</code> or <code>REJECTED</code>.</li>
+<li><strong>REQ-LEAVE-04:</strong> The system shall preserve a permanent chronological audit log of all historical leave decisions.</li>
+</ul>
+<h2>4.6 Fee Ledger, Billing Reports, and Arrears Audit</h2>
+<h3>4.6.1 Description and Priority</h3>
+<p>Audits hostel room fees, mess catering dues, and miscellaneous charges, tracking payment settlements and outstanding student arrears.<br><strong>Priority:</strong> High.</p>
+<h3>4.6.2 Stimulus/Response Sequences</h3>
+<ol>
+<li><strong>Ledger Audit:</strong> Warden or Mess Manager opens <code>/fees/report</code>.</li>
+<li><strong>Aggregated Processing:</strong> Server queries the <code>FEE</code> table grouped by student, calculating <code>SUM(amount)</code> as Total Assessed, <code>SUM(amount WHERE status = &#39;PAID&#39;)</code> as Amount Cleared, and the difference as Outstanding Arrears.</li>
+<li><strong>Interface Render:</strong> The report renders KPI metric cards: Total Assessed Revenue, Total Collected, Total Outstanding, and percentage Collection Rate.</li>
+<li><strong>Filtering:</strong> Supervisors filter between &quot;All Records&quot;, &quot;Cleared Accounts&quot;, and &quot;Pending Dues&quot;, or execute real-time searches by roll number or student name.</li>
+</ol>
+<h3>4.6.3 Functional Requirements</h3>
+<ul>
+<li><strong>REQ-FEE-01:</strong> The system shall track individual fee line items with amount, fee category, due date, and payment status (<code>PAID</code>, <code>PENDING</code>).</li>
+<li><strong>REQ-FEE-02:</strong> The system shall automatically compute student balance arrears and identify students with zero dues versus outstanding debt.</li>
+<li><strong>REQ-FEE-03:</strong> Fee reports shall provide instant search filtering across roll numbers, student names, and payment status categories.</li>
+</ul>
+<h2>4.7 Facility Maintenance and Grievance Ticketing</h2>
+<h3>4.7.1 Description and Priority</h3>
+<p>Allows residents to report room fixture defects, electrical failures, plumbing problems, or food hygiene grievances, and empowers Wardens to log inspections and resolutions.<br><strong>Priority:</strong> Medium.</p>
+<h3>4.7.2 Stimulus/Response Sequences</h3>
+<ol>
+<li><strong>Ticket Logging:</strong> Student accesses <code>/student/complaints</code>, selects category (<code>ROOM</code>, <code>MAINTENANCE</code>, <code>MESS</code>, <code>OTHER</code>), inputs problem description, and submits.</li>
+<li><strong>Backend Processing:</strong> System normalizes category input against database ENUM values, inserts record into <code>COMPLAINT</code> with status <code>OPEN</code>.</li>
+<li><strong>Warden Resolution:</strong> Warden views <code>/warden/complaints</code>, filters by <code>OPEN</code> or <code>RESOLVED</code>, clicks &quot;Mark Resolved&quot;, inputs administrative resolution notes, and saves.</li>
+<li><strong>Resolution Recording:</strong> System updates ticket with <code>status = &#39;RESOLVED&#39;</code>, <code>resolved_date = NOW()</code>, and stores resolution notes for student review.</li>
+</ol>
+<h3>4.7.3 Functional Requirements</h3>
+<ul>
+<li><strong>REQ-COMP-01:</strong> The system shall accept grievance tickets categorized under <code>ROOM</code>, <code>MAINTENANCE</code>, <code>MESS</code>, or <code>OTHER</code>.</li>
+<li><strong>REQ-COMP-02:</strong> All newly submitted tickets shall initialize with <code>status = &#39;OPEN&#39;</code>.</li>
+<li><strong>REQ-COMP-03:</strong> Wardens shall be required to input resolution notes when marking a complaint as resolved.</li>
+</ul>
+<h2>4.8 Mess Dining Menu and Catering Operations</h2>
+<h3>4.8.1 Description and Priority</h3>
+<p>Displays the official institutional meal timetable across breakfast, lunch, evening snacks, and dinner, specifying timings and dietary categories.<br><strong>Priority:</strong> Medium.</p>
+<h3>4.8.2 Functional Requirements</h3>
+<ul>
+<li><strong>REQ-MESS-01:</strong> The system shall maintain scheduled meal menu timetables across four standardized daily dining sessions: Breakfast, Lunch, Evening Snacks, and Dinner.</li>
+<li><strong>REQ-MESS-02:</strong> The system shall display specific serving time windows and dietary classifications (e.g., South Indian Special, Full Thali Meal).</li>
+<li><strong>REQ-MESS-03:</strong> The student mess portal shall provide institutional food safety guidelines, catering certifications, and special sick diet request protocols.</li>
+</ul>
+<h2>4.9 Supervisory Staff Provisioning and Administrative Governance</h2>
+<h3>4.9.1 Description and Priority</h3>
+<p>Enables System Administrators to appoint, configure, and decommission supervisory personnel (Wardens and Mess Managers).<br><strong>Priority:</strong> High.</p>
+<h3>4.9.2 Functional Requirements</h3>
+<ul>
+<li><strong>REQ-ADM-01:</strong> The system shall allow Administrators to create new user accounts assigned with <code>WARDEN</code> or <code>MESS_MANAGER</code> roles.</li>
+<li><strong>REQ-ADM-02:</strong> The system shall provide deletion capabilities for decommissioned staff accounts with referential integrity enforcement.</li>
+<li><strong>REQ-ADM-03:</strong> The Admin dashboard shall display aggregate institution-wide KPI statistics: Total Enrolled Students, Active Wardens, Mess Managers, and Hostel Room Inventory.</li>
+</ul>
+<hr>
+<h1 class="chapter-break">5. Other Nonfunctional Requirements</h1>
+<h2>5.1 Performance Requirements</h2>
+<ul>
+<li><strong>Response Latency:</strong> The REST API backend shall process and respond to 95% of standard read queries within 250 milliseconds under standard campus network loads.</li>
+<li><strong>Client Render Speed:</strong> Initial Single Page Application bundle load and first contentful paint (FCP) shall complete within 1.2 seconds on standard broadband connections.</li>
+<li><strong>Concurrent Load Capacity:</strong> The system architecture shall support a minimum of 500 concurrent active user sessions without service degradation or database thread exhaustion.</li>
+<li><strong>Optimistic State Updates:</strong> Interactive roll-call and meal check-in buttons shall reflect state changes within 50 milliseconds on the client interface to support rapid dining hall queues.</li>
+</ul>
+<h2>5.2 Safety Requirements</h2>
+<ul>
+<li><strong>Data Loss Prevention:</strong> All database write operations modifying student residential status, bed allocations, or payment receipts must be committed within transactional boundaries (<code>ACID</code>) to prevent partial state corruption during hardware failure.</li>
+<li><strong>Emergency Contact Integrity:</strong> Guardian contact phone numbers stored in the <code>STUDENT</code> table must be strictly preserved without truncation to ensure immediate availability during campus medical emergencies.</li>
+</ul>
+<h2>5.3 Security Requirements</h2>
+<ul>
+<li><strong>Credential Storage:</strong> User passwords must never be stored in plaintext. Passwords must be hashed using strong cryptographic hashing algorithms (bcrypt with a minimum work factor of 10).</li>
+<li><strong>Cryptographic Token Verification:</strong> All protected API endpoints must validate incoming JWT tokens against signature corruption, tampering, and expiration.</li>
+<li><strong>Role-Based Authorization:</strong> Backend routes must enforce strict role verification middleware:<ul>
+<li><code>/api/admin/*</code> restricted exclusively to <code>ADMIN</code>.</li>
+<li><code>/api/warden/*</code> restricted exclusively to <code>WARDEN</code>.</li>
+<li><code>/api/mess-manager/*</code> restricted to <code>MESS_MANAGER</code>.</li>
+<li><code>/api/student/*</code> restricted to <code>STUDENT</code>.</li>
+</ul>
+</li>
+<li><strong>SQL Injection Prevention:</strong> All SQL queries interacting with the MySQL database must utilize prepared statements with parameterized queries (<code>?</code> placeholders). No string concatenation of user inputs into SQL strings is permitted.</li>
+<li><strong>Cross-Site Scripting (XSS) Sanitization:</strong> React&#39;s virtual DOM natively escapes HTML entity inputs, preventing execution of injected script tags in student complaint or leave text fields.</li>
+</ul>
+<h2>5.4 Software Quality Attributes</h2>
+<ul>
+<li><strong>Availability:</strong> The system shall maintain an operational availability of 99.5% during academic semesters, scheduling administrative maintenance during off-peak hours (02:00 AM - 04:00 AM).</li>
+<li><strong>Maintainability:</strong> Source code must adhere to clean modular separation: frontend reusable UI tokens isolated in <code>src/components/ui/</code>, backend routers decoupled from controller business logic, and database configs centralized in <code>config/db.js</code>.</li>
+<li><strong>Usability:</strong> The UI must adhere to modern SaaS visual guidelines, utilizing high-contrast typography, clear status pill badges, and accessible form labels compliant with WCAG 2.1 Level AA standards.</li>
+<li><strong>Portability:</strong> The entire application stack must execute consistently across standard operating systems (Windows, Linux, macOS) without modification to underlying application source code.</li>
+</ul>
+<h2>5.5 Business Rules</h2>
+<ul>
+<li><strong>Rule 1 (Attendance Threshold):</strong> Institutional regulations mandate that student residents maintain an aggregate attendance turnout of at least 75% across academic terms to retain hostel accommodation eligibility.</li>
+<li><strong>Rule 2 (Single Room Allocation):</strong> A student resident may be allocated to at most one hostel room at any given point in time.</li>
+<li><strong>Rule 3 (Bed Capacity Cap):</strong> The total number of active student residents allocated to a room shall never exceed the defined physical bed capacity of that room.</li>
+<li><strong>Rule 4 (Chronological Leave Integrity):</strong> A leave out-pass return date must be chronologically equal to or greater than the departure date.</li>
+<li><strong>Rule 5 (Warden Authorization):</strong> Only appointed Wardens are legally authorized to review, approve, or reject student residential leave applications.</li>
+</ul>
+<hr>
+<h1 class="chapter-break">6. Other Requirements</h1>
+<h2>6.1 Conceptual Data Model and Relational Schemas</h2>
+<p>The HMMS database schema is normalized to Third Normal Form (3NF) to guarantee transactional integrity and eliminate update anomalies.</p>
+<h3>Relational Entity Descriptions</h3>
+<h4>1. <code>USER</code></h4>
+<p>Represents all system actors. Stores core credentials, contact email, telephone, role classification, and creation timestamps.</p>
+<ul>
+<li><code>user_id</code> (INT, Primary Key, Auto Increment)</li>
+<li><code>username</code> (VARCHAR(100), Not Null)</li>
+<li><code>email</code> (VARCHAR(100), Unique, Not Null)</li>
+<li><code>password</code> (VARCHAR(255), Not Null)</li>
+<li><code>role</code> (ENUM(&#39;ADMIN&#39;, &#39;WARDEN&#39;, &#39;MESS_MANAGER&#39;, &#39;STUDENT&#39;), Not Null)</li>
+<li><code>phone</code> (VARCHAR(20), Nullable)</li>
+<li><code>created_at</code> (TIMESTAMP, Default CURRENT_TIMESTAMP)</li>
+</ul>
+<h4>2. <code>STUDENT</code></h4>
+<p>Specialized entity holding academic resident profiles, referencing <code>USER(user_id)</code>.</p>
+<ul>
+<li><code>student_id</code> (INT, Primary Key, Auto Increment)</li>
+<li><code>user_id</code> (INT, Foreign Key referencing <code>USER(user_id)</code> ON DELETE CASCADE)</li>
+<li><code>roll_no</code> (VARCHAR(50), Unique, Not Null)</li>
+<li><code>department</code> (VARCHAR(100), Not Null)</li>
+<li><code>year_of_study</code> (INT, Not Null)</li>
+<li><code>room_id</code> (INT, Nullable, Foreign Key referencing <code>ROOM(room_id)</code> ON DELETE SET NULL)</li>
+<li><code>guardian_contact</code> (VARCHAR(20), Nullable)</li>
+</ul>
+<h4>3. <code>WARDEN</code></h4>
+<p>Staff profile for hostel supervisory personnel, referencing <code>USER(user_id)</code>.</p>
+<ul>
+<li><code>warden_id</code> (INT, Primary Key, Auto Increment)</li>
+<li><code>user_id</code> (INT, Foreign Key referencing <code>USER(user_id)</code> ON DELETE CASCADE)</li>
+<li><code>hostel_block</code> (VARCHAR(50), Nullable)</li>
+</ul>
+<h4>4. <code>MESS_MANAGER</code></h4>
+<p>Profile for dining operations personnel, referencing <code>USER(user_id)</code>.</p>
+<ul>
+<li><code>manager_id</code> (INT, Primary Key, Auto Increment)</li>
+<li><code>user_id</code> (INT, Foreign Key referencing <code>USER(user_id)</code> ON DELETE CASCADE)</li>
+<li><code>mess_name</code> (VARCHAR(100), Nullable)</li>
+</ul>
+<h4>5. <code>ROOM</code></h4>
+<p>Physical hostel residential units.</p>
+<ul>
+<li><code>room_id</code> (INT, Primary Key, Auto Increment)</li>
+<li><code>room_number</code> (VARCHAR(20), Unique, Not Null)</li>
+<li><code>room_type</code> (ENUM(&#39;SINGLE&#39;, &#39;DOUBLE&#39;, &#39;TRIPLE&#39;), Not Null)</li>
+<li><code>capacity</code> (INT, Not Null)</li>
+<li><code>occupied_count</code> (INT, Default 0)</li>
+<li><code>status</code> (ENUM(&#39;AVAILABLE&#39;, &#39;FULL&#39;), Default &#39;AVAILABLE&#39;)</li>
+</ul>
+<h4>6. <code>ATTENDANCE</code></h4>
+<p>Multi-session dining check-in and daily physical roll-call records.</p>
+<ul>
+<li><code>attendance_id</code> (INT, Primary Key, Auto Increment)</li>
+<li><code>student_id</code> (INT, Foreign Key referencing <code>STUDENT(student_id)</code> ON DELETE CASCADE)</li>
+<li><code>date</code> (DATE, Not Null)</li>
+<li><code>meal_type</code> (ENUM(&#39;BREAKFAST&#39;, &#39;LUNCH&#39;, &#39;DINNER&#39;, &#39;DAILY&#39;), Not Null)</li>
+<li><code>present</code> (BOOLEAN, Default FALSE)</li>
+<li><em>Composite Unique Key:</em> <code>(student_id, date, meal_type)</code></li>
+</ul>
+<h4>7. <code>LEAVE_APPLICATION</code></h4>
+<p>Student out-pass departure permission applications.</p>
+<ul>
+<li><code>leave_id</code> (INT, Primary Key, Auto Increment)</li>
+<li><code>student_id</code> (INT, Foreign Key referencing <code>STUDENT(student_id)</code> ON DELETE CASCADE)</li>
+<li><code>from_date</code> (DATE, Not Null)</li>
+<li><code>to_date</code> (DATE, Not Null)</li>
+<li><code>reason</code> (TEXT, Not Null)</li>
+<li><code>status</code> (ENUM(&#39;PENDING&#39;, &#39;APPROVED&#39;, &#39;REJECTED&#39;), Default &#39;PENDING&#39;)</li>
+<li><code>applied_date</code> (TIMESTAMP, Default CURRENT_TIMESTAMP)</li>
+</ul>
+<h4>8. <code>FEE</code></h4>
+<p>Student financial billing ledgers and settlement records.</p>
+<ul>
+<li><code>fee_id</code> (INT, Primary Key, Auto Increment)</li>
+<li><code>student_id</code> (INT, Foreign Key referencing <code>STUDENT(student_id)</code> ON DELETE CASCADE)</li>
+<li><code>amount</code> (DECIMAL(10,2), Not Null)</li>
+<li><code>fee_type</code> (VARCHAR(50), Default &#39;HOSTEL_MESS&#39;)</li>
+<li><code>due_date</code> (DATE, Nullable)</li>
+<li><code>status</code> (ENUM(&#39;PAID&#39;, &#39;PENDING&#39;, &#39;UNPAID&#39;), Default &#39;PENDING&#39;)</li>
+<li><code>paid_date</code> (TIMESTAMP, Nullable)</li>
+</ul>
+<h4>9. <code>COMPLAINT</code></h4>
+<p>Facility maintenance tickets and grievance records.</p>
+<ul>
+<li><code>complaint_id</code> (INT, Primary Key, Auto Increment)</li>
+<li><code>student_id</code> (INT, Foreign Key referencing <code>STUDENT(student_id)</code> ON DELETE CASCADE)</li>
+<li><code>resolved_by</code> (INT, Nullable, Foreign Key referencing <code>WARDEN(warden_id)</code>)</li>
+<li><code>category</code> (ENUM(&#39;ROOM&#39;, &#39;MESS&#39;, &#39;MAINTENANCE&#39;, &#39;OTHER&#39;), Not Null)</li>
+<li><code>description</code> (TEXT, Not Null)</li>
+<li><code>status</code> (ENUM(&#39;OPEN&#39;, &#39;IN_PROGRESS&#39;, &#39;RESOLVED&#39;, &#39;REJECTED&#39;), Default &#39;OPEN&#39;)</li>
+<li><code>submitted_date</code> (TIMESTAMP, Default CURRENT_TIMESTAMP)</li>
+<li><code>resolved_date</code> (TIMESTAMP, Nullable)</li>
+<li><code>resolution_notes</code> (TEXT, Nullable)</li>
+</ul>
+<h3>Entity Relationship Mapping Table</h3>
+<table>
+<thead>
+<tr>
+<th align="left">Source Entity</th>
+<th align="left">Cardinality</th>
+<th align="left">Target Entity</th>
+<th align="left">Relationship Description</th>
+<th align="left">Referential Integrity Rule</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><code>USER</code></td>
+<td align="left">1 : 1</td>
+<td align="left"><code>STUDENT</code></td>
+<td align="left">User credentials map to resident profile</td>
+<td align="left"><code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td align="left"><code>USER</code></td>
+<td align="left">1 : 1</td>
+<td align="left"><code>WARDEN</code></td>
+<td align="left">User credentials map to warden profile</td>
+<td align="left"><code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td align="left"><code>USER</code></td>
+<td align="left">1 : 1</td>
+<td align="left"><code>MESS_MANAGER</code></td>
+<td align="left">User credentials map to dining manager</td>
+<td align="left"><code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td align="left"><code>ROOM</code></td>
+<td align="left">1 : N</td>
+<td align="left"><code>STUDENT</code></td>
+<td align="left">Room houses multiple residents up to capacity</td>
+<td align="left"><code>ON DELETE SET NULL</code></td>
+</tr>
+<tr>
+<td align="left"><code>STUDENT</code></td>
+<td align="left">1 : N</td>
+<td align="left"><code>ATTENDANCE</code></td>
+<td align="left">Student accumulates multi-session roll-calls</td>
+<td align="left"><code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td align="left"><code>STUDENT</code></td>
+<td align="left">1 : N</td>
+<td align="left"><code>LEAVE_APPLICATION</code></td>
+<td align="left">Student files chronological leave out-passes</td>
+<td align="left"><code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td align="left"><code>STUDENT</code></td>
+<td align="left">1 : N</td>
+<td align="left"><code>FEE</code></td>
+<td align="left">Student is assessed semester fee invoices</td>
+<td align="left"><code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td align="left"><code>STUDENT</code></td>
+<td align="left">1 : N</td>
+<td align="left"><code>COMPLAINT</code></td>
+<td align="left">Student logs maintenance grievance tickets</td>
+<td align="left"><code>ON DELETE CASCADE</code></td>
+</tr>
+<tr>
+<td align="left"><code>WARDEN</code></td>
+<td align="left">1 : N</td>
+<td align="left"><code>COMPLAINT</code></td>
+<td align="left">Warden inspects and resolves tickets</td>
+<td align="left"><code>ON DELETE SET NULL</code></td>
+</tr>
+</tbody></table>
+<h2>6.2 Data Backup and Disaster Recovery Strategy</h2>
+<ol>
+<li><strong>Automated Logical Backups:</strong> The system utilizes native <code>mysqldump</code> utilities scheduled via server cron jobs to generate daily compressed <code>.sql.gz</code> snapshots of the HMMS database at 03:00 AM UTC.</li>
+<li><strong>Point-in-Time Recovery (PITR):</strong> MySQL binary logging (<code>binlog</code>) is enabled to allow database restoration to any precise second preceding an accidental administrative deletion.</li>
+<li><strong>Restoration Verification:</strong> Quarterly mock restoration tests are executed on staging servers to verify backup integrity and validate recovery time objectives (RTO &lt; 1 hour, RPO &lt; 24 hours).</li>
+</ol>
+<h2>6.3 Security Considerations and Hardening</h2>
+<ul>
+<li><strong>Environment Isolation:</strong> Database credentials, JWT secret keys, and server port allocations are strictly isolated within uncommitted <code>.env</code> files.</li>
+<li><strong>Strict Parameter Normalization:</strong> Backend controllers sanitize all user payloads and validate enumeration values prior to database query execution, eliminating uncaught 500 runtime exceptions.</li>
+<li><strong>Session Expiration:</strong> Client-side authentication tokens are verified on every view transition; expired or tampered tokens result in immediate memory clearance and redirection to the portal login screen.</li>
+</ul>
+<h2>6.4 Future System Enhancements</h2>
+<p>While HMMS Version 1.0 represents a functionally complete system, future planned iterations include:</p>
+<ul>
+<li><strong>Automated Payment Gateway Integration:</strong> Incorporating Razorpay/Stripe webhooks for online student fee settlement via UPI, credit/debit cards, and net banking.</li>
+<li><strong>Biometric Hardware Integration:</strong> Interfacing physical fingerprint scanners or RFID smart-card turnstiles at dining hall entries with the attendance logging endpoint.</li>
+<li><strong>SMS / Push Notifications:</strong> Automated SMS alerts dispatched to parents upon Warden approval of overnight student leave out-passes.</li>
+</ul>
+<hr>
+<h1 class="chapter-break">Appendix A: Glossary</h1>
+<ul>
+<li><strong>ACID:</strong> Atomicity, Consistency, Isolation, Durability; set of database properties ensuring reliable transaction processing.</li>
+<li><strong>API:</strong> Application Programming Interface; a set of defined rules enabling software applications to communicate.</li>
+<li><strong>CORS:</strong> Cross-Origin Resource Sharing; browser security mechanism regulating cross-domain HTTP requests.</li>
+<li><strong>HMMS:</strong> Hostel &amp; Mess Management System; the software product specified in this document.</li>
+<li><strong>JWT:</strong> JSON Web Token; compact, URL-safe means of representing claims to be transferred between two parties.</li>
+<li><strong>KPI:</strong> Key Performance Indicator; quantifiable visual metrics reflecting operational performance (e.g., Occupancy Rate).</li>
+<li><strong>Out-Pass:</strong> Official university authorization permitting a resident student to exit campus quarters overnight.</li>
+<li><strong>RBAC:</strong> Role-Based Access Control; system access restriction based on verified user organizational roles.</li>
+<li><strong>REST:</strong> Representational State Transfer; software architectural style for distributed hypermedia systems.</li>
+<li><strong>SPA:</strong> Single Page Application; web application that dynamically rewrites the current web page rather than loading entire new pages from a server.</li>
+<li><strong>UI/UX:</strong> User Interface / User Experience; design domains governing application aesthetics and workflow ergonomics.</li>
+</ul>
+<hr>
+<h1 class="chapter-break">Appendix B: Analysis Models</h1>
+<h2>B.1 System Architecture Diagram</h2>
+<pre><code>+-------------------------------------------------------------------------------------------------+
+|                                    Figure B.1: System Architecture of HMMS                      |
+|                                                                                                 |
+|   +-----------------------------------------------------------------------------------------+   |
+|   |                                  CLIENT TIER (React SPA)                                |   |
+|   |  +--------------------+   +--------------------+   +--------------------+   +---------+ |   |
+|   |  | Student Dashboard  |   | Warden Portal      |   | Mess Operations    |   | Admin   | |   |
+|   |  +--------------------+   +--------------------+   +--------------------+   +---------+ |   |
+|   |  +------------------------------------------------------------------------------------+ |   |
+|   |  | Reusable UI System (StatCard, DashboardCard, Table, Badge, Button, Input, Search)  | |   |
+|   |  +------------------------------------------------------------------------------------+ |   |
+|   |  +------------------------------------------------------------------------------------+ |   |
+|   |  | State Management &amp; Networking (AuthContext, Axios Interceptors, React Router 6)    | |   |
+|   |  +------------------------------------------------------------------------------------+ |   |
+|   +-----------------------------------------------------------------------------------------+   |
+|                                                |                                                |
+|                                      HTTPS / JSON Requests                                      |
+|                                                v                                                |
+|   +-----------------------------------------------------------------------------------------+   |
+|   |                              APPLICATION TIER (Node.js/Express)                         |   |
+|   |  +------------------------------------------------------------------------------------+ |   |
+|   |  | Middleware Pipeline: CORS, Express JSON Parser, Token Verifier, Role Gatekeeper    | |   |
+|   |  +------------------------------------------------------------------------------------+ |   |
+|   |  +------------------+   +------------------+   +-------------------+   +--------------+ |   |
+|   |  | Auth Controller  |   | Student Service  |   | Warden Controller |   | Mess Service | |   |
+|   |  +------------------+   +------------------+   +-------------------+   +--------------+ |   |
+|   +-----------------------------------------------------------------------------------------+   |
+|                                                |                                                |
+|                                    Parameterized SQL Queries                                    |
+|                                                v                                                |
+|   +-----------------------------------------------------------------------------------------+   |
+|   |                                  DATA TIER (MySQL 8.0)                                  |   |
+|   |  +---------+   +---------+   +--------+   +------------+   +------------+   +---------+ |   |
+|   |  | USER    |---| STUDENT |---| ROOM   |---| ATTENDANCE |---| LEAVE_APP  |---| FEE     | |   |
+|   |  +---------+   +---------+   +--------+   +------------+   +------------+   +---------+ |   |
+|   +-----------------------------------------------------------------------------------------+   |
++-------------------------------------------------------------------------------------------------+
+</code></pre>
+<p><em>(Space reserved for high-resolution vector architectural rendering: Figure B.1: System Architecture of HMMS)</em></p>
+<h2>B.2 Use Case Diagram</h2>
+<pre><code>+-------------------------------------------------------------------------------------------------+
+|                                      Figure B.2: Use Case Diagram of HMMS                       |
+|                                                                                                 |
+|   +---------------+                                                                             |
+|   |    STUDENT    |----( View Room Details )                                                    |
+|   |     ACTOR     |----( Check Meal Attendance Compliance )                                     |
+|   +---------------+----( Apply for Leave Out-Pass )                                             |
+|           |            ( Submit Maintenance Complaint )                                         |
+|           |            ( View Invoiced Fees &amp; Dues )                                            |
+|           |                                                                                     |
+|   +---------------+                                                                             |
+|   |    WARDEN     |----( Mark Daily Hostel &amp; Meal Attendance )                                  |
+|   |     ACTOR     |----( Allocate Student Resident to Room )                                    |
+|   +---------------+----( Approve or Reject Leave Applications )                                 |
+|           |            ( Review &amp; Resolve Facility Complaints )                                 |
+|           |            ( Generate Resident Fee Arrears Report )                                 |
+|           |                                                                                     |
+|   +---------------+                                                                             |
+|   | MESS MANAGER  |----( Record Breakfast/Lunch/Dinner Check-ins )                              |
+|   |     ACTOR     |----( View Real-time Dining Attendance Summary )                             |
+|   +---------------+----( Access Dining Fee Payment Ledgers )                                    |
+|                        ( Consult Published Meal Timetable )                                     |
+|                                                                                                 |
+|   +---------------+                                                                             |
+|   | SYSTEM ADMIN  |----( Enrol Student Resident Profiles )                                      |
+|   |     ACTOR     |----( Appoint &amp; Decommission Wardens )                                       |
+|   +---------------+----( Appoint Mess Dining Managers )                                         |
+|                        ( Create &amp; Manage Room Master Inventory )                                |
+|                        ( Oversee System-Wide Analytics )                                        |
++-------------------------------------------------------------------------------------------------+
+</code></pre>
+<p><em>(Space reserved for standardized UML Use Case Diagram: Figure B.2: Use Case Diagram of HMMS)</em></p>
+<h2>B.3 Entity Relationship (ER) Diagram</h2>
+<pre><code>+-------------------------------------------------------------------------------------------------+
+|                                    Figure B.3: Entity Relationship Diagram                      |
+|                                                                                                 |
+|   +--------------------+               +-----------------------+                                |
+|   |        USER        | 1           1 |        STUDENT        |                                |
+|   |--------------------|---------------|-----------------------|                                |
+|   | PK user_id         |               | PK student_id         |                                |
+|   |    username        |               | FK user_id            |                                |
+|   |    email (UQ)      |               |    roll_no (UQ)       |                                |
+|   |    password        |               |    department         |                                |
+|   |    role            |               |    year_of_study      |                                |
+|   |    phone           |               | FK room_id            |                                |
+|   +--------------------+               +-----------------------+                                |
+|             |                                |      |      |                                    |
+|             | 1:1                            | 1:N  | 1:N  | 1:N                                |
+|             v                                v      |      v                                    |
+|   +--------------------+      +------------------+  |  +--------------------+                   |
+|   |       WARDEN       |      |    ATTENDANCE    |  |  | LEAVE_APPLICATION  |                   |
+|   |--------------------|      |------------------|  |  |--------------------|                   |
+|   | PK warden_id       |      | PK attendance_id |  |  | PK leave_id        |                   |
+|   | FK user_id         |      | FK student_id    |  |  | FK student_id      |                   |
+|   +--------------------+      |    date          |  |  |    from_date       |                   |
+|                               |    meal_type     |  |  |    to_date         |                   |
+|                               |    present       |  |  |    reason          |                   |
+|                               +------------------+  |  |    status          |                   |
+|                                                     |  +--------------------+                   |
+|                                                     v                                           |
+|   +--------------------+      +------------------+     +--------------------+                   |
+|   |        ROOM        | 1  N |       FEE        |     |     COMPLAINT      |                   |
+|   |--------------------|------|------------------|     |--------------------|                   |
+|   | PK room_id         |      | PK fee_id        |     | PK complaint_id    |                   |
+|   |    room_number(UQ) |      | FK student_id    |     | FK student_id      |                   |
+|   |    room_type       |      |    amount        |     | FK resolved_by     |                   |
+|   |    capacity        |      |    status        |     |    category        |                   |
+|   |    occupied_count  |      |    due_date      |     |    description     |                   |
+|   |    status          |      +------------------+     |    status          |                   |
+|   +--------------------+                               |    resolution_notes|                   |
+|                                                        +--------------------+                   |
++-------------------------------------------------------------------------------------------------+
+</code></pre>
+<p><em>(Space reserved for crows-foot notation relational database diagram: Figure B.3: Entity Relationship Diagram)</em></p>
+<h2>B.4 Activity Diagram: Student Leave Workflow</h2>
+<pre><code>+-------------------------------------------------------------------------------------------------+
+|                              Figure B.4: Activity Diagram: Student Leave Workflow               |
+|                                                                                                 |
+|   [Start]                                                                                       |
+|      |                                                                                          |
+|      v                                                                                          |
+|   ( Student logs into portal and accesses Leave Application view )                              |
+|      |                                                                                          |
+|      v                                                                                          |
+|   ( Enters from_date, to_date, travel destination and reason )                                  |
+|      |                                                                                          |
+|      v                                                                                          |
+|   &lt; Valid date range? (to_date &gt;= from_date) &gt;                                                  |
+|      |                                   |                                                      |
+|     NO                                  YES                                                     |
+|      |                                   |                                                      |
+|      v                                   v                                                      |
+|   [ Alert client validation error ]   ( Insert LEAVE_APPLICATION record with status &#39;PENDING&#39; ) |
+|                                          |                                                      |
+|                                          v                                                      |
+|                                       ( Warden accesses pending out-pass review queue )         |
+|                                          |                                                      |
+|                                          v                                                      |
+|                                       &lt; Warden Decision? &gt;                                      |
+|                                        /                \                                       |
+|                             [ APPROVE ]                  [ REJECT ]                             |
+|                                  /                            \                                 |
+|                                 v                              v                                |
+|               ( Update status = &#39;APPROVED&#39; )         ( Update status = &#39;REJECTED&#39; )             |
+|                                 \                              /                                |
+|                                  \                            /                                 |
+|                                   v                          v                                  |
+|                               ( Student view reflects updated decision badge )                  |
+|                                          |                                                      |
+|                                          v                                                      |
+|                                       [End]                                                     |
++-------------------------------------------------------------------------------------------------+
+</code></pre>
+<p><em>(Space reserved for formal UML Activity Diagram: Figure B.4: Student Leave Approval Workflow)</em></p>
+<h2>B.5 Sequence Diagram: Multi-Session Attendance Logging</h2>
+<pre><code>+-------------------------------------------------------------------------------------------------+
+|                     Figure B.5: Sequence Diagram: Multi-Session Attendance Logging              |
+|                                                                                                 |
+|   Warden / Supervisor          React Frontend SPA         Express Backend Server      MySQL DB  |
+|           |                            |                             |                    |     |
+|           |--- Clicks Attendance -----&gt;|                             |                    |     |
+|           |    Toggle (Present)        |                             |                    |     |
+|           |                            |--- Optimistic UI Update ---&gt;|                    |     |
+|           |                            |    (Button turns green)     |                    |     |
+|           |                            |                             |                    |     |
+|           |                            |--- POST /api/attendance ---&gt;|                    |     |
+|           |                            |    {student_id, date,       |                    |     |
+|           |                            |     meal_type, present}     |                    |     |
+|           |                            |                             |--- INSERT ... ----&gt;|     |
+|           |                            |                             |    ON DUPLICATE    |     |
+|           |                            |                             |    KEY UPDATE      |     |
+|           |                            |                             |&lt;-- Success OK -----|     |
+|           |                            |&lt;-- HTTP 200 JSON Success ---|                    |     |
+|           |&lt;-- Visual Confirmation ----|                             |                    |     |
+|           |    (Toast / Check Badge)   |                             |                    |     |
++-------------------------------------------------------------------------------------------------+
+</code></pre>
+<p><em>(Space reserved for formal UML Sequence Diagram: Figure B.5: Multi-Session Attendance Logging)</em></p>
+<hr>
+<h1 class="chapter-break">Appendix C: To Be Determined (TBD) List</h1>
+<table>
+<thead>
+<tr>
+<th align="left">Item Identifier</th>
+<th align="left">Functional Area</th>
+<th align="left">Description of Open Inquiry</th>
+<th align="left">Expected Resolution Milestone</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left"><strong>TBD-01</strong></td>
+<td align="left">External Interfaces</td>
+<td align="left">Specification of commercial payment gateway merchant keys (Razorpay/Stripe) for live credit card settlement.</td>
+<td align="left">Phase 2 Production Deployment</td>
+</tr>
+<tr>
+<td align="left"><strong>TBD-02</strong></td>
+<td align="left">Hardware Interfaces</td>
+<td align="left">Hardware serial interface protocols for physical turnstile biometric optical fingerprint sensors.</td>
+<td align="left">Phase 2 Production Deployment</td>
+</tr>
+<tr>
+<td align="left"><strong>TBD-03</strong></td>
+<td align="left">Communication Interfaces</td>
+<td align="left">Gateway SMS provider contract for parent notification dispatch.</td>
+<td align="left">Phase 3 Institutional Integration</td>
+</tr>
+</tbody></table>
+<hr>
+<p><strong>[End of Software Requirements Specification — Hostel &amp; Mess Management System (HMMS)]</strong></p>
+
+</body>
+</html>

@@ -1,0 +1,15 @@
+services:
+  - type: web
+    name: hmms-backend
+    env: node
+    plan: free
+    rootDir: backend
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: JWT_SECRET
+        value: hmms_production_secret_key_2026_xyz
+      - key: JWT_EXPIRES_IN
+        value: 14d
